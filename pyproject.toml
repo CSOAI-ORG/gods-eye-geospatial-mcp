@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gods-eye-geospatial-mcp"
+version = "1.0.0"
+description = "Gods Eye — sovereign geospatial awareness MCP. Wraps open, non-US-dependent APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, Ordnance Survey UK, INSPIRE EU, DEFRA) behind the MEOK Care Membrane ethics gate. For AI-agent situational awareness, environmental compliance, disaster response. Not for kinetic operations. By MEOK AI Labs."
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "MEOK AI Labs", email = "nicholas@meok.ai"}]
+keywords = ["mcp", "geospatial", "copernicus", "sentinel-2", "openstreetmap", "overture-maps", "ordnance-survey", "sovereign-ai", "care-membrane", "situational-awareness", "defence-adjacent", "uk-sovereign", "meok-ai-labs", "gods-eye"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: GIS"]
+dependencies = ["mcp>=1.0.0"]
+
+[project.urls]
+Homepage = "https://meok.ai/gods-eye-geospatial-mcp"
+Repository = "https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+only-include = ["server.py"]
+
+[project.scripts]
+gods-eye-geospatial-mcp = "server:main"
