@@ -1,65 +1,38 @@
-# Gods Eye — Sovereign Geospatial Awareness MCP
+<div align="center">
 
-**Sovereign geospatial awareness for AI agents**, wrapping open, non-US-dependent APIs behind the MEOK Care Membrane ethics gate.
+[![GitHub stars](https://img.shields.io/github/stars/CSOAI-ORG/gods-eye-geospatial-mcp)](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/stargazers)
 
-By [MEOK AI Labs](https://meok.ai).
+# ugodsU eyeU geospatialU mcp
 
-## What it does
+****Civilian open-source geospatial awareness for AI agents**, wrapping open-licence APIs behind the MEOK Care Membrane ethics gate.**
 
-- Wraps **ESA Copernicus Sentinel-1/2/3/5p** (SAR, multispectral, ocean/land/thermal, atmospheric)
-- Wraps **OpenStreetMap** + **Overture Maps** + **Ordnance Survey UK** + **INSPIRE EU** + **DEFRA UK**
-- Every query passes through the **Care Membrane** — a pre-inference ethics gate that blocks kinetic-targeting, personal surveillance, and other high-risk patterns
-- Provides **sovereignty checks** — flag US supply-chain dependencies in an existing stack and suggest alternatives
+[![npm version](https://img.shields.io/npm/v/@meok-ai/gods-eye-geospatial-mcp)](https://www.npmjs.com/package/@meok-ai/gods-eye-geospatial-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![MEOK AI Labs](https://img.shields.io/badge/MEOK_AI_Labs-255+_servers-purple)](https://meok.ai)
 
-## Why sovereign?
+[Installation](#installation) · [Docs](https://csoai.org) · [Report Bug](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/issues)
 
-- **UK HMG / MoD procurement** frequently requires minimising US supply-chain exposure (ITAR, CLOUD Act, EO 14117)
-- Copernicus is **EU-accessible, free, all-weather SAR + 13-band multispectral** — you don't need Maxar or Planet to answer 80% of public-sector questions
-- Care Membrane provides **governance-auditable decisions** for any defence-adjacent buyer
-- Designed to complement our `dora-compliance-mcp`, `nis2-compliance-mcp`, `cra-compliance-mcp`
+</div>
 
-## What it is NOT
+---
 
-- **Not for kinetic targeting.** Care Membrane blocks patterns like "strike package", "find-fix-finish", "target elimination", "bounty", "lethal" and similar.
-- **Not a replacement for Maxar/Planet** where sub-metre commercial imagery is genuinely required.
-- **Not a face-recognition or individual-tracking tool.** Any such query is blocked.
-
-## Install
+## Installation
 
 ```bash
 pip install gods-eye-geospatial-mcp
+# or
+npm install -g @meok-ai/gods-eye-geospatial-mcp
 ```
 
-## Claude Desktop
+## Quick Start
 
-```json
-{
-  "mcpServers": {
-    "gods-eye": { "command": "gods-eye-geospatial-mcp" }
-  }
-}
-```
+See the project repository for full documentation and examples.
 
-## Use cases
+## Enterprise Support
 
-- AI agent situational awareness (location → weather, terrain, infrastructure)
-- Coastline / maritime domain awareness (aggregate shipping, non-individual)
-- Agriculture / yield estimation (NDVI / NDWI time series)
-- Infrastructure change detection (before / after)
-- Disaster response (flood / wildfire / earthquake overlays)
-- Environmental compliance evidence (CSRD E3 water, E4 biodiversity)
-
-## Tiers
-
-- **Free** — 10 situational queries/day, sovereignty checks
-- **Pro £199/mo** — unlimited + auto-fetches tiles + caches + signed attestations
-- **Enterprise £1,499/mo** — multi-tenant, on-prem deployment option, custom Care Membrane policies
-- **48h audit £5,000** — sovereignty review of your entire geospatial stack
-
-## Care Membrane
-
-The Care Membrane is MEOK's pre-inference ethics gate. Every query is evaluated for high-risk patterns before an external API is called. Policy is visible via the `care_membrane_policy` tool and reviewable by auditors.
+- 📧 nicholas@csoai.org
+- 🌐 [CSOAI.org](https://csoai.org)
 
 ## License
 
-MIT — MEOK AI Labs, 2026.
+MIT © [CSOAI](https://csoai.org)
