@@ -1,3 +1,7 @@
+[![gods-eye-geospatial-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp/badges/score.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-Published-green)](https://registry.modelcontextprotocol.io)
+[![PyPI](https://img.shields.io/pypi/v/gods-eye-geospatial-mcp)](https://pypi.org/project/gods-eye-geospatial-mcp/)
+
 [![gods-eye-geospatial-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp/badges/card.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp)
 
 <div align="center">
