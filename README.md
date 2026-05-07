@@ -1,3 +1,5 @@
+[![gods-eye-geospatial-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp/badges/card.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp)
+
 <div align="center">
 
 [![GitHub stars](https://img.shields.io/github/stars/CSOAI-ORG/gods-eye-geospatial-mcp)](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/stargazers)
