@@ -1,0 +1,28 @@
+name: gods-eye-geospatial-mcp
+description: 'Gods Eye Geospatial tools for AI agents. Built by MEOK AI Labs.'
+version: 1.0.0
+tools:
+- name: list_data_sources
+  description: 'List Data Sources operation.'
+  parameters:
+  - name: input
+    type: string
+    required: true
+- name: situational_query
+  description: 'Situational Query operation.'
+  parameters:
+  - name: input
+    type: string
+    required: true
+- name: check_sovereignty
+  description: 'Check Sovereignty operation.'
+  parameters:
+  - name: input
+    type: string
+    required: true
+- name: care_membrane_policy
+  description: 'Care Membrane Policy operation.'
+  parameters:
+  - name: input
+    type: string
+    required: true
