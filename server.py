@@ -213,6 +213,10 @@ def list_data_sources(api_key: str = "") -> str:
     When NOT to use:
         Do not rely solely on this tool for production security decisions.
         Always combine with manual security review.
+
+    Args:
+        api_key (str): The api key to analyze or process.
+
     Behavioral Transparency:
         - Side Effects: This tool is read-only and produces no side effects. It does not modify
           any external state, databases, or files. All output is computed in-memory and returned
@@ -266,6 +270,16 @@ def situational_query(
     When NOT to use:
         Do not rely solely on this tool for production security decisions.
         Always combine with manual security review.
+
+    Args:
+        query (str): The query to analyze or process.
+        bbox (str): The bbox to analyze or process.
+        aoi_name (str): The aoi name to analyze or process.
+        time_window (str): The time window to analyze or process.
+        preferred_sources (str): The preferred sources to analyze or process.
+        openstreetmap": The openstreetmap" to analyze or process.
+        api_key (str): The api key to analyze or process.
+
     Behavioral Transparency:
         - Side Effects: This tool is read-only and produces no side effects. It does not modify
           any external state, databases, or files. All output is computed in-memory and returned
@@ -357,6 +371,11 @@ def check_sovereignty(stack_description: str, api_key: str = "") -> str:
     When NOT to use:
         Do not rely solely on this tool for production security decisions.
         Always combine with manual security review.
+
+    Args:
+        stack_description (str): The stack description to analyze or process.
+        api_key (str): The api key to analyze or process.
+
     Behavioral Transparency:
         - Side Effects: This tool is read-only and produces no side effects. It does not modify
           any external state, databases, or files. All output is computed in-memory and returned
@@ -429,6 +448,10 @@ def care_membrane_policy(api_key: str = "") -> str:
     When NOT to use:
         Do not rely solely on this tool for production security decisions.
         Always combine with manual security review.
+
+    Args:
+        api_key (str): The api key to analyze or process.
+
     Behavioral Transparency:
         - Side Effects: This tool is read-only and produces no side effects. It does not modify
           any external state, databases, or files. All output is computed in-memory and returned
