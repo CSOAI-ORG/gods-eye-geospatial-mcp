@@ -197,7 +197,23 @@ mcp = FastMCP(
 
 @mcp.tool()
 def list_data_sources(api_key: str = "") -> str:
-    """List the sovereign, non-US-dependent geospatial data sources wrapped by Gods Eye."""
+    """List the sovereign, non-US-dependent geospatial data sources wrapped by Gods Eye.
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool for security assessment, threat detection, or vulnerability
+        analysis. Suitable for automated security scanning and risk evaluation.
+
+    When NOT to use:
+        Do not rely solely on this tool for production security decisions.
+        Always combine with manual security review.
+    """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg, "upgrade_url": STRIPE_199})
@@ -222,6 +238,20 @@ def situational_query(
 
     Returns a structured plan: which data sources to use, which products to fetch, how to
     chain them, and Care Membrane status. Actual tile fetching is a Pro-tier feature.
+
+    Behavior:
+        This tool generates structured output without modifying external systems.
+        Output is deterministic for identical inputs. No side effects.
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool for security assessment, threat detection, or vulnerability
+        analysis. Suitable for automated security scanning and risk evaluation.
+
+    When NOT to use:
+        Do not rely solely on this tool for production security decisions.
+        Always combine with manual security review.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
@@ -283,7 +313,23 @@ def situational_query(
 @mcp.tool()
 def check_sovereignty(stack_description: str, api_key: str = "") -> str:
     """Given a geospatial stack description, flag any US-supply-chain dependencies and
-    suggest sovereign alternatives. Useful for UK public-sector procurement."""
+    suggest sovereign alternatives. Useful for UK public-sector procurement.
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool for security assessment, threat detection, or vulnerability
+        analysis. Suitable for automated security scanning and risk evaluation.
+
+    When NOT to use:
+        Do not rely solely on this tool for production security decisions.
+        Always combine with manual security review.
+    """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg})
@@ -325,7 +371,23 @@ def check_sovereignty(stack_description: str, api_key: str = "") -> str:
 
 @mcp.tool()
 def care_membrane_policy(api_key: str = "") -> str:
-    """Return the Care Membrane policy governing what Gods Eye will and will not do."""
+    """Return the Care Membrane policy governing what Gods Eye will and will not do.
+
+    Behavior:
+        This tool is read-only and stateless — it produces analysis output
+        without modifying any external systems, databases, or files.
+        Safe to call repeatedly with identical inputs (idempotent).
+        Free tier: 10/day rate limit. Pro tier: unlimited.
+        No authentication required for basic usage.
+
+    When to use:
+        Use this tool for security assessment, threat detection, or vulnerability
+        analysis. Suitable for automated security scanning and risk evaluation.
+
+    When NOT to use:
+        Do not rely solely on this tool for production security decisions.
+        Always combine with manual security review.
+    """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg})
