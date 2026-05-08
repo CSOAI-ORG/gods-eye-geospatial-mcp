@@ -1,45 +1,59 @@
-[![gods-eye-geospatial-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp/badges/score.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp)
-[![MCP Registry](https://img.shields.io/badge/MCP_Registry-Published-green)](https://registry.modelcontextprotocol.io)
-[![PyPI](https://img.shields.io/pypi/v/gods-eye-geospatial-mcp)](https://pypi.org/project/gods-eye-geospatial-mcp/)
-
-[![gods-eye-geospatial-mcp MCP server](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp/badges/card.svg)](https://glama.ai/mcp/servers/CSOAI-ORG/gods-eye-geospatial-mcp)
-
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/CSOAI-ORG/gods-eye-geospatial-mcp)](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/stargazers)
+# Gods Eye Geospatial MCP
 
-# ugodsU eyeU geospatialU mcp
+**MCP server for gods eye geospatial mcp operations**
 
-****Civilian open-source geospatial awareness for AI agents**, wrapping open-licence APIs behind the MEOK Care Membrane ethics gate.**
-
-[![npm version](https://img.shields.io/npm/v/@meok-ai/gods-eye-geospatial-mcp)](https://www.npmjs.com/package/@meok-ai/gods-eye-geospatial-mcp)
+[![PyPI](https://img.shields.io/pypi/v/meok-gods-eye-geospatial-mcp)](https://pypi.org/project/meok-gods-eye-geospatial-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![MEOK AI Labs](https://img.shields.io/badge/MEOK_AI_Labs-255+_servers-purple)](https://meok.ai)
-
-[Installation](#installation) · [Docs](https://csoai.org) · [Report Bug](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/issues)
+[![MEOK AI Labs](https://img.shields.io/badge/MEOK_AI_Labs-MCP_Server-purple)](https://meok.ai)
 
 </div>
 
----
+## Overview
+
+Gods Eye Geospatial MCP provides AI-powered tools via the Model Context Protocol (MCP).
+
+## Tools
+
+| Tool | Description |
+|------|-------------|
+| `list_data_sources` | List the open-licence geospatial data sources wrapped by Gods Eye. |
+| `situational_query` | Plan a geospatial situational-awareness query. Pass natural-language 'query' plu |
+| `check_data_provenance` | Given a geospatial stack description, flag proprietary / closed-licence dependen |
+| `care_membrane_policy` | Return the Care Membrane policy governing what Gods Eye will and will not do. |
+| `sign_data_provenance_attestation` | Generate a cryptographically signed data-provenance attestation for your geospat |
 
 ## Installation
 
 ```bash
-pip install gods-eye-geospatial-mcp
-# or
-npm install -g @meok-ai/gods-eye-geospatial-mcp
+pip install meok-gods-eye-geospatial-mcp
 ```
 
-## Quick Start
+## Usage with Claude Desktop
 
-See the project repository for full documentation and examples.
+Add to your Claude Desktop MCP config (`claude_desktop_config.json`):
 
-## Enterprise Support
+```json
+{
+  "mcpServers": {
+    "gods-eye-geospatial-mcp": {
+      "command": "python",
+      "args": ["-m", "meok_gods_eye_geospatial_mcp.server"]
+    }
+  }
+}
+```
 
-- 📧 nicholas@csoai.org
-- 🌐 [CSOAI.org](https://csoai.org)
+## Usage with FastMCP
+
+```python
+from mcp.server.fastmcp import FastMCP
+
+# This server exposes 5 tool(s) via MCP
+# See server.py for full implementation
+```
 
 ## License
 
-MIT © [CSOAI](https://csoai.org)
-<!-- mcp-name: io.github.CSOAI-ORG/gods-eye-geospatial-mcp -->
+MIT © [MEOK AI Labs](https://meok.ai)
