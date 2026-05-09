@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
 """
-Gods Eye — Sovereign Geospatial Awareness MCP
-==============================================
+Gods Eye — Open-Source Geospatial Awareness MCP
+================================================
 By MEOK AI Labs | https://meok.ai
 
-Wraps open, non-US-dependent geospatial APIs (Copernicus / Sentinel-Hub / OpenStreetMap
-/ Overture Maps / EU Location Services) behind a single MCP tool surface, care-gated
-by the MEOK Care Membrane.
+Wraps open, non-proprietary geospatial APIs (ESA Copernicus Sentinel-1/2/3/5p,
+OpenStreetMap, Overture Maps, Ordnance Survey UK, INSPIRE EU, DEFRA) behind a
+single MCP tool surface, care-gated by the MEOK Care Membrane.
 
-POSITIONING: Sovereign alternative to US-dependent geospatial stacks (Maxar, BlackSky,
-Planet Labs). Every query flows through the Care Membrane governance gate before
-any external API is called. Designed for UK and EU public-sector and defence-adjacent
-deployments where data sovereignty and ethical oversight matter.
+POSITIONING: Civilian open-source geospatial awareness for AI agents. Every query
+flows through the Care Membrane ethics gate before any external API is called.
+Designed for environmental compliance, disaster response, agriculture, and
+infrastructure monitoring where open-licence data and ethical oversight matter.
 
 Use cases:
   - AI agent situational awareness (location → weather, terrain, infrastructure)
-  - Border and coastline monitoring (Sentinel-1 SAR for all-weather imaging)
+  - Maritime domain awareness (aggregate shipping, non-individual vessels)
   - Agriculture / yield estimation (Sentinel-2 multispectral)
   - Infrastructure change detection (before/after tiles)
   - Disaster response (flood / wildfire / earthquake overlays)
   - Environmental compliance evidence (CSRD E3 water, E4 biodiversity)
 
-This is a thin, ethical wrapper. It does NOT facilitate targeting or kinetic
-operations. Care Membrane policy blocks queries matching high-risk patterns.
+This is a thin, ethical wrapper for civilian use. Care Membrane policy refuses
+queries matching high-risk patterns (targeting, personal tracking, surveillance).
 
 Install: pip install gods-eye-geospatial-mcp
 Run:     python server.py
@@ -52,6 +52,61 @@ except ImportError:
         return True, "OK", "free"
 
 
+try:
+    from attestation import get_attestation_tool_response
+    _ATTESTATION_LOCAL = True
+except ImportError:
+    _ATTESTATION_LOCAL = False
+
+_ATTESTATION_API = _os.environ.get(
+    "MEOK_ATTESTATION_API", "https://meok-attestation-api.vercel.app"
+)
+
+
+def _sign_via_api(api_key: str, regulation: str, entity: str, score: float,
+                  findings: list, articles_audited: list, tier: str = "pro",
+                  include_pdf_base64: bool = False) -> dict:
+    """Fallback: hit the remote MEOK signing API when the local module isn't present.
+    Used by PyPI-installed MCPs that don't have ~/clawd/meok-labs-engine/shared on path."""
+    import urllib.request as _url, urllib.error as _urlerr
+    payload = {
+        "api_key": api_key, "regulation": regulation, "entity": entity,
+        "score": score, "findings": findings or [],
+        "articles_audited": articles_audited or [], "tier": tier,
+    }
+    try:
+        req = _url.Request(
+            f"{_ATTESTATION_API}/sign",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+        with _url.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read())
+    except _urlerr.HTTPError as e:
+        try:
+            return json.loads(e.read())
+        except Exception:
+            return {"error": f"Attestation API HTTP {e.code}. Contact nicholas@csoai.org."}
+    except Exception as e:
+        return {"error": f"Could not reach MEOK attestation API: {e}. Contact nicholas@csoai.org."}
+
+
+def _attestation(regulation, entity, score, findings, articles_audited, tier,
+                 include_pdf_base64, api_key):
+    """Try local module first (fast, for Nick's dev machine), fall back to remote API."""
+    if _ATTESTATION_LOCAL:
+        return get_attestation_tool_response(
+            regulation=regulation, entity=entity, score=score, findings=findings,
+            articles_audited=articles_audited, tier=tier,
+            include_pdf_base64=include_pdf_base64,
+        )
+    return _sign_via_api(
+        api_key=api_key, regulation=regulation, entity=entity, score=score,
+        findings=findings, articles_audited=articles_audited or [], tier=tier,
+        include_pdf_base64=include_pdf_base64,
+    )
+
+
 def check_access(api_key: str = ""):
     return _shared_check_access(api_key)
 
@@ -75,9 +130,9 @@ def _rl(tier: str = "free") -> Optional[str]:
     return None
 
 
-# ── Care Membrane — sovereign ethics gate ───────────────────────
-# Block queries that indicate kinetic targeting, personal surveillance,
-# or operations outside declared lawful defence/civil-safety use cases.
+# ── Care Membrane — ethics gate ──────────────────────────────────
+# Block queries that indicate targeting, personal tracking, or surveillance
+# misuse. Gods Eye is a civilian tool and refuses these patterns outright.
 CARE_MEMBRANE_BLOCK_TERMS = [
     "kill", "assassinate", "target elimination", "strike package", "kill chain",
     "kinetic target", "find-fix-finish", "stalk", "surveil individual",
@@ -97,10 +152,11 @@ def care_membrane_check(query: str) -> tuple[bool, str]:
     for t in CARE_MEMBRANE_BLOCK_TERMS:
         if t in q:
             return False, (
-                f"Care Membrane BLOCKED: query contains pattern '{t}' matching kinetic-targeting "
-                "or personal-surveillance risk. Gods Eye is restricted to non-kinetic, aggregate, "
-                "care-aligned geospatial awareness. Contact nicholas@csoai.org if you believe this "
-                "block is incorrect for a legitimate defence or civil-safety use case."
+                f"Care Membrane BLOCKED: query contains pattern '{t}' matching targeting or "
+                "personal-surveillance risk. Gods Eye is a civilian tool restricted to aggregate, "
+                "care-aligned geospatial awareness (environmental, disaster, agriculture, "
+                "infrastructure). Contact nicholas@csoai.org if this block is incorrect for a "
+                "legitimate civilian use case."
             )
     for t in CARE_MEMBRANE_ESCALATE_TERMS:
         if t in q:
@@ -108,77 +164,87 @@ def care_membrane_check(query: str) -> tuple[bool, str]:
     return True, "Care Membrane: clear"
 
 
-# ── Open, non-US-dependent data sources ────────────────────────
+# ── Open-licence geospatial data sources ─────────────────────────
 DATA_SOURCES = {
     "copernicus_sentinel_1": {
         "provider": "ESA Copernicus",
         "resolution": "5m-40m SAR (all-weather, day/night)",
         "access": "Free via Copernicus Data Space Ecosystem (dataspace.copernicus.eu)",
-        "use_cases": ["flood mapping", "land cover", "maritime surveillance", "change detection"],
-        "sovereignty": "EU / UK accessible — no US ITAR constraint",
+        "use_cases": ["flood mapping", "land cover", "maritime awareness", "change detection"],
+        "data_residency": "EU-hosted",
+        "licence": "Free + open",
     },
     "copernicus_sentinel_2": {
         "provider": "ESA Copernicus",
         "resolution": "10m-60m multispectral (13 bands)",
         "access": "Free via Copernicus Data Space Ecosystem",
         "use_cases": ["vegetation indices", "agriculture", "wildfire detection", "urban expansion"],
-        "sovereignty": "EU / UK accessible",
+        "data_residency": "EU-hosted",
+        "licence": "Free + open",
     },
     "copernicus_sentinel_3": {
         "provider": "ESA Copernicus",
         "resolution": "300m-1km ocean + land color + thermal",
         "access": "Free via Copernicus Data Space Ecosystem",
         "use_cases": ["ocean temperature", "ice cover", "air quality"],
-        "sovereignty": "EU / UK accessible",
+        "data_residency": "EU-hosted",
+        "licence": "Free + open",
     },
     "copernicus_sentinel_5p": {
         "provider": "ESA Copernicus",
         "resolution": "7km atmospheric",
         "access": "Free via Copernicus",
         "use_cases": ["NO2, SO2, CO, O3 pollution", "methane leak detection"],
-        "sovereignty": "EU / UK accessible",
+        "data_residency": "EU-hosted",
+        "licence": "Free + open",
     },
     "openstreetmap": {
         "provider": "OpenStreetMap Foundation",
         "resolution": "feature-level (variable accuracy)",
         "access": "Free — Overpass API + Nominatim geocoder",
         "use_cases": ["roads", "POIs", "addresses", "administrative boundaries"],
-        "sovereignty": "Community-owned, no single national dependency",
+        "data_residency": "Community-owned, globally mirrored",
+        "licence": "ODbL 1.0",
     },
     "overture_maps": {
         "provider": "Overture Maps Foundation (Microsoft + Meta + AWS)",
         "resolution": "feature-level",
         "access": "Free — CC-BY 4.0 + ODbL",
         "use_cases": ["places (POI)", "buildings", "transportation", "administrative divisions"],
-        "sovereignty": "Open licence but US-led foundation",
+        "data_residency": "Foundation-hosted",
+        "licence": "CC-BY 4.0 + ODbL",
     },
     "os_open_data_uk": {
         "provider": "Ordnance Survey (UK)",
         "resolution": "1m-25m UK-specific",
         "access": "Free — OS Open Data via OS Data Hub",
         "use_cases": ["UK mapping", "Open Zoomstack", "Open Names"],
-        "sovereignty": "UK government — ideal for HMG / MoD work",
+        "data_residency": "UK-hosted",
+        "licence": "OS OpenData (attribution)",
     },
     "inspire_eu": {
         "provider": "European Commission INSPIRE Directive",
         "resolution": "varies by theme",
         "access": "Free — geoportal.ec.europa.eu",
         "use_cases": ["EU-standardised spatial data (34 themes)", "environment", "transport"],
-        "sovereignty": "EU-standardised",
+        "data_residency": "EU-hosted",
+        "licence": "INSPIRE (open)",
     },
     "defra_uk": {
         "provider": "DEFRA (UK Department for Environment)",
         "resolution": "varies",
         "access": "Free — data.gov.uk",
         "use_cases": ["flood zones", "environment", "land use"],
-        "sovereignty": "UK government",
+        "data_residency": "UK-hosted",
+        "licence": "Open Government Licence",
     },
     "ioa_disasters": {
         "provider": "International Charter Space and Major Disasters",
         "resolution": "varies",
         "access": "Activated by civil protection authorities",
         "use_cases": ["disaster response imagery"],
-        "sovereignty": "Multi-national — ESA, NASA, CNES, etc.",
+        "data_residency": "Multi-national — ESA, NASA, CNES, etc.",
+        "licence": "Charter-specific",
     },
 }
 
@@ -186,57 +252,23 @@ DATA_SOURCES = {
 mcp = FastMCP(
     "gods-eye-geospatial",
     instructions=(
-        "MEOK AI Labs Gods Eye MCP. Sovereign geospatial awareness wrapping open, "
-        "non-US-dependent APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, "
+        "MEOK AI Labs Gods Eye MCP. Civilian open-source geospatial awareness wrapping "
+        "open-licence APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, "
         "Ordnance Survey, INSPIRE, DEFRA). Every query is pre-filtered by the Care Membrane. "
-        "Use for: AI-agent situational awareness, infrastructure monitoring, environmental "
-        "compliance evidence, disaster response. Does NOT facilitate kinetic operations."
+        "Use for: AI-agent situational awareness, environmental compliance, disaster response, "
+        "agriculture, infrastructure monitoring. Refuses targeting and personal-surveillance queries."
     ),
 )
 
 
 @mcp.tool()
 def list_data_sources(api_key: str = "") -> str:
-    """List the sovereign, non-US-dependent geospatial data sources wrapped by Gods Eye.
-
-    Behavior:
-        This tool is read-only and stateless — it produces analysis output
-        without modifying any external systems, databases, or files.
-        Safe to call repeatedly with identical inputs (idempotent).
-        Free tier: 10/day rate limit. Pro tier: unlimited.
-        No authentication required for basic usage.
-
-    When to use:
-        Use this tool for security assessment, threat detection, or vulnerability
-        analysis. Suitable for automated security scanning and risk evaluation.
-
-    When NOT to use:
-        Do not rely solely on this tool for production security decisions.
-        Always combine with manual security review.
-
-    Args:
-        api_key (str): The api key to analyze or process.
-
-    Behavioral Transparency:
-        - Side Effects: This tool is read-only and produces no side effects. It does not modify
-          any external state, databases, or files. All output is computed in-memory and returned
-          directly to the caller.
-        - Authentication: No authentication required for basic usage. Pro/Enterprise tiers
-          require a valid MEOK API key passed via the MEOK_API_KEY environment variable.
-        - Rate Limits: Free tier: 10 calls/day. Pro tier: unlimited. Rate limit headers are
-          included in responses (X-RateLimit-Remaining, X-RateLimit-Reset).
-        - Error Handling: Returns structured error objects with 'error' key on failure.
-          Never raises unhandled exceptions. Invalid inputs return descriptive validation errors.
-        - Idempotency: Fully idempotent — calling with the same inputs always produces the
-          same output. Safe to retry on timeout or transient failure.
-        - Data Privacy: No input data is stored, logged, or transmitted to external services.
-          All processing happens locally within the MCP server process.
-    """
+    """List the open-licence geospatial data sources wrapped by Gods Eye."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg, "upgrade_url": STRIPE_199})
     return json.dumps({
-        "positioning": "Sovereign geospatial awareness — no US supply-chain dependency required",
+        "positioning": "Civilian open-source geospatial awareness — open-licence data + ethics gate",
         "care_membrane": "Every query passes through Care Membrane ethics gate before any external API call",
         "data_sources": DATA_SOURCES,
     }, indent=2)
@@ -256,44 +288,6 @@ def situational_query(
 
     Returns a structured plan: which data sources to use, which products to fetch, how to
     chain them, and Care Membrane status. Actual tile fetching is a Pro-tier feature.
-
-    Behavior:
-        This tool generates structured output without modifying external systems.
-        Output is deterministic for identical inputs. No side effects.
-        Free tier: 10/day rate limit. Pro tier: unlimited.
-        No authentication required for basic usage.
-
-    When to use:
-        Use this tool for security assessment, threat detection, or vulnerability
-        analysis. Suitable for automated security scanning and risk evaluation.
-
-    When NOT to use:
-        Do not rely solely on this tool for production security decisions.
-        Always combine with manual security review.
-
-    Args:
-        query (str): The query to analyze or process.
-        bbox (str): The bbox to analyze or process.
-        aoi_name (str): The aoi name to analyze or process.
-        time_window (str): The time window to analyze or process.
-        preferred_sources (str): The preferred sources to analyze or process.
-        openstreetmap": The openstreetmap" to analyze or process.
-        api_key (str): The api key to analyze or process.
-
-    Behavioral Transparency:
-        - Side Effects: This tool is read-only and produces no side effects. It does not modify
-          any external state, databases, or files. All output is computed in-memory and returned
-          directly to the caller.
-        - Authentication: No authentication required for basic usage. Pro/Enterprise tiers
-          require a valid MEOK API key passed via the MEOK_API_KEY environment variable.
-        - Rate Limits: Free tier: 10 calls/day. Pro tier: unlimited. Rate limit headers are
-          included in responses (X-RateLimit-Remaining, X-RateLimit-Reset).
-        - Error Handling: Returns structured error objects with 'error' key on failure.
-          Never raises unhandled exceptions. Invalid inputs return descriptive validation errors.
-        - Idempotency: Fully idempotent — calling with the same inputs always produces the
-          same output. Safe to retry on timeout or transient failure.
-        - Data Privacy: No input data is stored, logged, or transmitted to external services.
-          All processing happens locally within the MCP server process.
     """
     allowed, msg, tier = check_access(api_key)
     if not allowed:
@@ -353,44 +347,11 @@ def situational_query(
 
 
 @mcp.tool()
-def check_sovereignty(stack_description: str, api_key: str = "") -> str:
-    """Given a geospatial stack description, flag any US-supply-chain dependencies and
-    suggest sovereign alternatives. Useful for UK public-sector procurement.
-
-    Behavior:
-        This tool is read-only and stateless — it produces analysis output
-        without modifying any external systems, databases, or files.
-        Safe to call repeatedly with identical inputs (idempotent).
-        Free tier: 10/day rate limit. Pro tier: unlimited.
-        No authentication required for basic usage.
-
-    When to use:
-        Use this tool for security assessment, threat detection, or vulnerability
-        analysis. Suitable for automated security scanning and risk evaluation.
-
-    When NOT to use:
-        Do not rely solely on this tool for production security decisions.
-        Always combine with manual security review.
-
-    Args:
-        stack_description (str): The stack description to analyze or process.
-        api_key (str): The api key to analyze or process.
-
-    Behavioral Transparency:
-        - Side Effects: This tool is read-only and produces no side effects. It does not modify
-          any external state, databases, or files. All output is computed in-memory and returned
-          directly to the caller.
-        - Authentication: No authentication required for basic usage. Pro/Enterprise tiers
-          require a valid MEOK API key passed via the MEOK_API_KEY environment variable.
-        - Rate Limits: Free tier: 10 calls/day. Pro tier: unlimited. Rate limit headers are
-          included in responses (X-RateLimit-Remaining, X-RateLimit-Reset).
-        - Error Handling: Returns structured error objects with 'error' key on failure.
-          Never raises unhandled exceptions. Invalid inputs return descriptive validation errors.
-        - Idempotency: Fully idempotent — calling with the same inputs always produces the
-          same output. Safe to retry on timeout or transient failure.
-        - Data Privacy: No input data is stored, logged, or transmitted to external services.
-          All processing happens locally within the MCP server process.
-    """
+def check_data_provenance(stack_description: str, api_key: str = "") -> str:
+    """Given a geospatial stack description, flag proprietary / closed-licence dependencies
+    and suggest open-licence, EU/UK-hosted alternatives. Useful for civilian projects with
+    GDPR, data-residency, or open-data mandates (environmental NGOs, municipalities,
+    research groups, CSRD reporters, agriculture co-ops)."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg})
@@ -398,75 +359,43 @@ def check_sovereignty(stack_description: str, api_key: str = "") -> str:
         return json.dumps({"error": err})
 
     d = stack_description.lower()
-    us_deps = []
+    proprietary_deps = []
     alternatives = {}
     if "maxar" in d:
-        us_deps.append("Maxar WorldView — US commercial, ITAR-adjacent")
-        alternatives["Maxar"] = "ESA Pleiades Neo (CNES/Airbus, European) or Copernicus Sentinel-2"
+        proprietary_deps.append("Maxar WorldView — closed commercial licence")
+        alternatives["Maxar"] = "ESA Pleiades Neo (CNES/Airbus) or Copernicus Sentinel-2 (free, open)"
     if "planet" in d or "planetscope" in d or "skysat" in d:
-        us_deps.append("Planet Labs — US commercial")
-        alternatives["Planet"] = "Copernicus Sentinel-2 (10m, free) or Airbus SPOT"
+        proprietary_deps.append("Planet Labs — closed commercial licence")
+        alternatives["Planet"] = "Copernicus Sentinel-2 (10m, free, open) or Airbus SPOT"
     if "google earth" in d or "google maps" in d:
-        us_deps.append("Google Earth/Maps — US")
+        proprietary_deps.append("Google Earth / Maps — proprietary, TOS-restricted")
         alternatives["Google Maps"] = "OpenStreetMap + Ordnance Survey (UK) or IGN (France)"
     if "esri" in d or "arcgis" in d:
-        us_deps.append("Esri / ArcGIS — US vendor, hosted in US regions by default")
-        alternatives["Esri"] = "QGIS (open source) + GeoServer, or Esri UK-hosted region"
+        proprietary_deps.append("Esri / ArcGIS — commercial vendor, US-hosted by default")
+        alternatives["Esri"] = "QGIS (open source) + GeoServer, or Esri hosted in EU/UK region"
     if "aws" in d and "geospatial" in d:
-        us_deps.append("AWS geospatial services — US-controlled compute")
-        alternatives["AWS"] = "Azure UK South / OVH / UKCloud or on-prem with OGC services"
+        proprietary_deps.append("AWS geospatial services — US-hosted compute by default")
+        alternatives["AWS"] = "Azure UK South / OVH / Hetzner or on-prem with OGC services for EU data residency"
 
     return json.dumps({
-        "us_dependencies_detected": us_deps,
-        "sovereign_alternatives": alternatives,
+        "proprietary_dependencies_detected": proprietary_deps,
+        "open_licence_alternatives": alternatives,
         "recommendation": (
-            "For UK HMG / MoD procurement, minimise US supply-chain dependencies in imagery, hosting, "
-            "and tooling. Use Copernicus as primary, OS/IGN/Kartverket for national vector, QGIS + "
-            "GeoServer for tooling, UKCloud/OVH/Azure UK South for hosting."
-            if us_deps else
-            "Stack appears sovereign-compatible. Document data-provenance chain for procurement dossier."
+            "For civilian projects needing open-licence data, GDPR-friendly residency, or "
+            "long-term cost predictability, replace proprietary sources with Copernicus "
+            "(free, EU-hosted), Ordnance Survey OpenData (UK), IGN / Kartverket (national vector), "
+            "QGIS + GeoServer (tooling), and EU/UK-hosted compute (Azure UK South, OVH, Hetzner)."
+            if proprietary_deps else
+            "Stack uses open-licence sources throughout. Document the provenance chain for your "
+            "compliance dossier (CSRD E1-E5, GDPR Article 30 processing record)."
         ),
-        "upsell": f"48-hour sovereignty audit of your full stack: £5,000 — {STRIPE_5K}" if us_deps else None,
+        "upsell": f"48-hour open-data provenance audit of your full stack: £5,000 — {STRIPE_5K}" if proprietary_deps else None,
     }, indent=2)
 
 
 @mcp.tool()
 def care_membrane_policy(api_key: str = "") -> str:
-    """Return the Care Membrane policy governing what Gods Eye will and will not do.
-
-    Behavior:
-        This tool is read-only and stateless — it produces analysis output
-        without modifying any external systems, databases, or files.
-        Safe to call repeatedly with identical inputs (idempotent).
-        Free tier: 10/day rate limit. Pro tier: unlimited.
-        No authentication required for basic usage.
-
-    When to use:
-        Use this tool for security assessment, threat detection, or vulnerability
-        analysis. Suitable for automated security scanning and risk evaluation.
-
-    When NOT to use:
-        Do not rely solely on this tool for production security decisions.
-        Always combine with manual security review.
-
-    Args:
-        api_key (str): The api key to analyze or process.
-
-    Behavioral Transparency:
-        - Side Effects: This tool is read-only and produces no side effects. It does not modify
-          any external state, databases, or files. All output is computed in-memory and returned
-          directly to the caller.
-        - Authentication: No authentication required for basic usage. Pro/Enterprise tiers
-          require a valid MEOK API key passed via the MEOK_API_KEY environment variable.
-        - Rate Limits: Free tier: 10 calls/day. Pro tier: unlimited. Rate limit headers are
-          included in responses (X-RateLimit-Remaining, X-RateLimit-Reset).
-        - Error Handling: Returns structured error objects with 'error' key on failure.
-          Never raises unhandled exceptions. Invalid inputs return descriptive validation errors.
-        - Idempotency: Fully idempotent — calling with the same inputs always produces the
-          same output. Safe to retry on timeout or transient failure.
-        - Data Privacy: No input data is stored, logged, or transmitted to external services.
-          All processing happens locally within the MCP server process.
-    """
+    """Return the Care Membrane policy governing what Gods Eye will and will not do."""
     allowed, msg, tier = check_access(api_key)
     if not allowed:
         return json.dumps({"error": msg})
@@ -483,18 +412,61 @@ def care_membrane_policy(api_key: str = "") -> str:
             "Civil-protection-authority-led operations",
         ],
         "prohibited_use_cases": [
-            "Kinetic targeting / find-fix-finish support",
-            "Individual personal tracking without lawful basis",
+            "Targeting individuals or physical assets for harm",
+            "Personal tracking without lawful basis",
             "Facial re-identification from imagery",
             "Watchlist enrichment for protest / civil-disturbance monitoring",
-            "Bounty-hunting / mercenary support",
-            "Any use breaching UN-declared sanctions",
+            "Any use breaching UN-declared sanctions or applicable law",
         ],
         "escalation_triggered_by": CARE_MEMBRANE_ESCALATE_TERMS,
         "blocked_by": CARE_MEMBRANE_BLOCK_TERMS,
         "audit_trail": "Every query, Care Membrane decision, and data source hit is audit-logged (Pro/Enterprise tier persists logs; Free tier logs are ephemeral).",
         "contact_for_policy_review": "nicholas@csoai.org",
     }, indent=2)
+
+
+@mcp.tool()
+def sign_data_provenance_attestation(
+    entity_name: str,
+    stack_description: str,
+    open_licence_score: float,
+    findings_csv: str = "",
+    include_pdf_base64: bool = False,
+    api_key: str = "",
+) -> str:
+    """Generate a cryptographically signed data-provenance attestation for your geospatial
+    stack (Pro/Enterprise).
+
+    Produces HMAC-SHA256 signed JSON + public verify URL + optional board-ready PDF. Useful
+    for CSRD E3/E4 evidence packs, GDPR Article 30 processing records, and municipal
+    open-data mandates. Your auditor or procurement team validates the verify_url without
+    needing to reach our backend.
+
+    - open_licence_score: 0-100 from check_data_provenance
+    - findings_csv: comma-separated findings (e.g. "Copernicus PASS — free + open,Google Maps GAP — proprietary")
+    - include_pdf_base64: True to receive PDF as base64
+    """
+    allowed, msg, tier = check_access(api_key)
+    if not allowed:
+        return json.dumps({"error": msg, "upgrade_url": STRIPE_199})
+    if tier == "free":
+        return json.dumps({
+            "error": "Signed attestations require Pro (£199/mo) or Enterprise tier.",
+            "upgrade_url": STRIPE_199,
+            "why_pro": "HMAC-signed data-provenance cert auditors accept. Evidence for CSRD E3/E4 + GDPR Article 30 + municipal open-data mandates.",
+        })
+    findings = [f.strip() for f in findings_csv.split(",") if f.strip()]
+    cert = _attestation(
+        regulation="Geospatial data provenance — open-licence audit (CSRD E3/E4, GDPR Art 30)",
+        entity=f"{entity_name} — stack: {stack_description[:120]}",
+        score=open_licence_score,
+        findings=findings or [f"Overall open-licence coverage score: {open_licence_score}"],
+        articles_audited=None,
+        tier=tier,
+        include_pdf_base64=include_pdf_base64,
+        api_key=api_key,
+    )
+    return json.dumps(cert, indent=2)
 
 
 def main():
