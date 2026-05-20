@@ -41,7 +41,6 @@ import os
 _MEOK_API_KEY = _os.environ.get("MEOK_API_KEY", "")
 
 try:
-    sys.path.insert(0, os.path.expanduser("~/clawd/meok-labs-engine/shared"))
     from auth_middleware import check_access as _shared_check_access
 except ImportError:
     def _shared_check_access(api_key: str = ""):
@@ -86,9 +85,9 @@ def _sign_via_api(api_key: str, regulation: str, entity: str, score: float,
         try:
             return json.loads(e.read())
         except Exception:
-            return {"error": f"Attestation API HTTP {e.code}. Contact nicholas@csoai.org."}
+            return {"error": f"Attestation API HTTP {e.code}. Contact nicholas@meok.ai."}
     except Exception as e:
-        return {"error": f"Could not reach MEOK attestation API: {e}. Contact nicholas@csoai.org."}
+        return {"error": f"Could not reach MEOK attestation API: {e}. Contact nicholas@meok.ai."}
 
 
 def _attestation(regulation, entity, score, findings, articles_audited, tier,
@@ -155,7 +154,7 @@ def care_membrane_check(query: str) -> tuple[bool, str]:
                 f"Care Membrane BLOCKED: query contains pattern '{t}' matching targeting or "
                 "personal-surveillance risk. Gods Eye is a civilian tool restricted to aggregate, "
                 "care-aligned geospatial awareness (environmental, disaster, agriculture, "
-                "infrastructure). Contact nicholas@csoai.org if this block is incorrect for a "
+                "infrastructure). Contact nicholas@meok.ai if this block is incorrect for a "
                 "legitimate civilian use case."
             )
     for t in CARE_MEMBRANE_ESCALATE_TERMS:
@@ -421,7 +420,7 @@ def care_membrane_policy(api_key: str = "") -> str:
         "escalation_triggered_by": CARE_MEMBRANE_ESCALATE_TERMS,
         "blocked_by": CARE_MEMBRANE_BLOCK_TERMS,
         "audit_trail": "Every query, Care Membrane decision, and data source hit is audit-logged (Pro/Enterprise tier persists logs; Free tier logs are ephemeral).",
-        "contact_for_policy_review": "nicholas@csoai.org",
+        "contact_for_policy_review": "nicholas@meok.ai",
     }, indent=2)
 
 
