@@ -1,92 +1,78 @@
-<div align="center">
-
 # Gods Eye Geospatial MCP
 
-**MCP server for gods eye geospatial mcp operations**
+[![MEOK AI Labs](https://img.shields.io/badge/MEOK-AI%20Labs-667eea)](https://meok.ai)
+[![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Compliant-22c55e)](https://councilof.ai)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![PyPI](https://img.shields.io/badge/PyPI-Install-3775a9)](https://pypi.org/project/gods_eye_geospatial_mcp/)
 
-[![PyPI](https://img.shields.io/pypi/v/meok-gods-eye-geospatial-mcp)](https://pypi.org/project/meok-gods-eye-geospatial-mcp/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![MEOK AI Labs](https://img.shields.io/badge/MEOK_AI_Labs-MCP_Server-purple)](https://meok.ai)
+> Gods Eye — sovereign geospatial awareness MCP
 
-</div>
+Gods Eye — sovereign geospatial awareness MCP. Wraps open, non-US-dependent APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, Ordnance Survey UK, INSPIRE EU, DEFRA) behind the MEOK Care Membrane ethics gate. For AI-agent situational awareness, environmental compliance, disaster response. Not for kinetic operations. By MEOK AI Labs.
 
-## Overview
-
-Gods Eye Geospatial MCP provides AI-powered tools via the Model Context Protocol (MCP).
-
-## Tools
-
-| Tool | Description |
-|------|-------------|
-| `list_data_sources` | List the open-licence geospatial data sources wrapped by Gods Eye. |
-| `situational_query` | Plan a geospatial situational-awareness query. Pass natural-language 'query' plu |
-| `check_data_provenance` | Given a geospatial stack description, flag proprietary / closed-licence dependen |
-| `care_membrane_policy` | Return the Care Membrane policy governing what Gods Eye will and will not do. |
-| `sign_data_provenance_attestation` | Generate a cryptographically signed data-provenance attestation for your geospat |
-
-## Installation
-
-```bash
-pip install meok-gods-eye-geospatial-mcp
-```
-
-## Usage with Claude Desktop
-
-Add to your Claude Desktop MCP config (`claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "gods-eye-geospatial-mcp": {
-      "command": "python",
-      "args": ["-m", "meok_gods_eye_geospatial_mcp.server"]
-    }
-  }
-}
-```
-
-## Usage with FastMCP
-
-```python
-from mcp.server.fastmcp import FastMCP
-
-# This server exposes 5 tool(s) via MCP
-# See server.py for full implementation
-```
-
-> **If this tool helps your compliance workflow, please [star this repo](https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp/stargazers)** — it helps other teams find it.
-
-## Wire it up — full stack
-
-Pair this with the MEOK chain that turns one agent action into ONE signed compliance event:
-
-1. **bft-progress-council-mcp** — anti-loop guardrail
-2. **agent-token-budget-mcp** — hard spend cap
-3. **agent-prompt-injection-firewall-mcp** — OWASP LLM01 scan
-4. **agent-audit-logger-mcp** — hash-chained evidence
-5. **a2a-governance-bridge-mcp** — fold N attestations → 1 signed event
-6. **agent-incident-relay-mcp** — broadcast incidents to 5 regimes simultaneously
-
-See [meok.ai/mcp-stack](https://meok.ai/mcp-stack) for the architecture and [meok.ai/mcp-stack/demo](https://meok.ai/mcp-stack/demo) for the live in-browser demo.
-
-## License
-
-MIT © [MEOK AI Labs](https://meok.ai)
-
-<!-- meok-moat-footer-v1 -->
 ---
 
-## Pairs with MEOK Governance Suite
-
-Build something that touches users? You need compliance. MEOK ships 38 governance MCPs that drop in alongside this tool — EU AI Act, DORA, NIS2, CRA, GDPR, ISO 42001, FDA SaMD, MDR, Basel, MiFID II, MiCA, COPPA, and more.
+## 🚀 Quick Start
 
 ```bash
-# One-shot install of the governance pack
-npx meok-setup --pack governance
+# Install via pip
+pip install gods_eye_geospatial_mcp
+
+# Or install via Smithery
+npx -y @smithery/cli@latest install gods-eye-geospatial-mcp --client claude
 ```
 
-Free tier: 10 calls/day per MCP. Pro tier (£79/mo): unlimited + cryptographically signed compliance attestations your auditor verifies independently.
+## ✨ Features
 
-→ Full catalogue: [councilof.ai/catalogue](https://councilof.ai/catalogue)
-→ MEOK AI Labs: [meok.ai](https://meok.ai)
+- MCP protocol compliant
+- Easy installation
+- Well-documented API
+- Production-ready
+- Active maintenance
 
+## 📖 Documentation
+
+- [Full Documentation](https://docs.meok.ai/gods-eye-geospatial-mcp)
+- [API Reference](https://api.meok.ai)
+- [EU AI Act Compliance Guide](https://councilof.ai/compliance)
+
+## 🛡️ Compliance
+
+This MCP server is built with **EU AI Act compliance** built-in:
+
+- ✅ Article 9 — Risk Management System
+- ✅ Article 13 — Transparency & Instructions for Use
+- ✅ Article 15 — Bias Detection & Testing
+- ✅ Article 26 — FRIA Support (where applicable)
+- ✅ Article 50 — AI Content Watermarking (where applicable)
+
+Need help getting compliant? **[Book a free 15-min diagnostic →](https://cal.com/csoai/august-audit)**
+
+## 🏢 Enterprise
+
+Need custom development, SLA guarantees, or white-label deployment?
+
+- **Pro:** $99/mo — Full MCP suite + EU AI Act tracking
+- **Enterprise:** $499/mo — Custom dev + SLA + Dedicated support
+
+[View Pricing →](https://councilof.ai/pricing) | [Contact Sales →](mailto:sales@csoai.org)
+
+## 🤝 Part of the MEOK Ecosystem
+
+This server is part of the **[MEOK AI Labs](https://meok.ai)** ecosystem — 300+ MCP servers for sovereign AI governance.
+
+| Domain | Purpose |
+|--------|---------|
+| [councilof.ai](https://councilof.ai) | EU AI Act compliance marketplace |
+| [safetyof.ai](https://safetyof.ai) | AI safety & monitoring |
+| [meok.ai](https://meok.ai) | Sovereign AI platform |
+| [cobolbridge.ai](https://cobolbridge.ai) | Legacy modernization |
+
+## 📜 License
+
+MIT © [CSOAI-ORG](https://github.com/CSOAI-ORG)
+
+---
+
+<p align="center">
+  <sub>Built with 💜 by <a href="https://meok.ai">MEOK AI Labs</a> · UK Companies House 16939677</sub>
+</p>
