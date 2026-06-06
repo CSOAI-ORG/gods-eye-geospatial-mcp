@@ -1,0 +1,32 @@
+# Gods Eye Geospatial MCP
+
+> Gods Eye — sovereign geospatial awareness MCP
+
+`gods-eye-geospatial-mcp` is a Model Context Protocol (MCP) server by MEOK AI Labs.
+
+## Install
+
+```bash
+pip install gods-eye-geospatial-mcp
+```
+
+Or run without installing:
+
+```bash
+uvx gods-eye-geospatial-mcp
+```
+
+## Tools
+
+- `list_data_sources` — List the open-licence geospatial data sources wrapped by Gods Eye.
+- `situational_query` — Plan a geospatial situational-awareness query. Pass natural-language 'query' plus
+- `check_data_provenance` — Given a geospatial stack description, flag proprietary / closed-licence dependencies
+- `care_membrane_policy` — Return the Care Membrane policy governing what Gods Eye will and will not do.
+- `sign_data_provenance_attestation` — Generate a cryptographically signed data-provenance attestation for your geospatial
+
+## Links
+
+- Source: https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp
+- PyPI: https://pypi.org/project/gods-eye-geospatial-mcp/
+- MEOK AI Labs: https://meok.ai
+- Council of AI: https://councilof.ai
