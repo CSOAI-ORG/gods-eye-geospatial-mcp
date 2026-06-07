@@ -1,0 +1,68 @@
+{
+  "name": "gods-eye-geospatial-mcp",
+  "description": "Gods Eye Geospatial MCP Server by MEOK AI Labs",
+  "url": "https://proofof.ai/scorecard/gods-eye-geospatial-mcp.html",
+  "version": "1.2.4",
+  "protocolVersion": "0.2.0",
+  "provider": {
+    "organization": "MEOK AI Labs",
+    "url": "https://meok.ai"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "skills": [
+    {
+      "id": "list_data_sources",
+      "name": "List Data Sources",
+      "description": "list_data_sources via gods-eye-geospatial-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "situational_query",
+      "name": "Situational Query",
+      "description": "situational_query via gods-eye-geospatial-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "check_data_provenance",
+      "name": "Check Data Provenance",
+      "description": "check_data_provenance via gods-eye-geospatial-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "care_membrane_policy",
+      "name": "Care Membrane Policy",
+      "description": "care_membrane_policy via gods-eye-geospatial-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    },
+    {
+      "id": "sign_data_provenance_attestation",
+      "name": "Sign Data Provenance Attestation",
+      "description": "sign_data_provenance_attestation via gods-eye-geospatial-mcp",
+      "tags": [
+        "mcp",
+        "compliance"
+      ]
+    }
+  ]
+}

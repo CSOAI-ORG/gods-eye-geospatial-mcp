@@ -1,0 +1,23 @@
+{
+  "acpVersion": "0.1",
+  "agent": {
+    "name": "gods-eye-geospatial-mcp",
+    "description": "Gods Eye Geospatial MCP Server by MEOK AI Labs",
+    "version": "1.2.4",
+    "provider": "MEOK AI Labs",
+    "interfaces": [
+      {
+        "type": "mcp",
+        "transport": "stdio",
+        "package": "gods-eye-geospatial-mcp"
+      }
+    ],
+    "capabilities": [
+      "list_data_sources",
+      "situational_query",
+      "check_data_provenance",
+      "care_membrane_policy",
+      "sign_data_provenance_attestation"
+    ]
+  }
+}
