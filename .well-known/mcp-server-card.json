@@ -1,0 +1,28 @@
+{
+  "name": "gods-eye-geospatial-mcp",
+  "title": "Gods Eye Geospatial Mcp",
+  "description": "Gods Eye \u2014 civilian open-source geospatial awareness MCP. Wraps open-licence APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, Ordnance Survey UK, INSPIRE EU, DEFRA) behind the MEOK Care Membrane ethics gate. For AI-agent situational awareness, environmental compliance, disaster response, agriculture. Refuses targeting and personal-surveillance queries. By MEOK AI Labs.",
+  "version": "1.2.4",
+  "homepage": "https://meok.ai",
+  "license": "MIT",
+  "transport": {
+    "type": "stdio"
+  },
+  "tools": [
+    {
+      "name": "list_data_sources"
+    },
+    {
+      "name": "situational_query"
+    },
+    {
+      "name": "check_data_provenance"
+    },
+    {
+      "name": "care_membrane_policy"
+    },
+    {
+      "name": "sign_data_provenance_attestation"
+    }
+  ]
+}

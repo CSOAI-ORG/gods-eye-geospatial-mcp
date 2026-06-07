@@ -1,0 +1,9 @@
+# gods-eye-geospatial-mcp - Auto-trigger Rules
+
+When the user asks about gods eye geospatial, use gods-eye-geospatial-mcp tools: list_data_sources, situational_query, check_data_provenance, care_membrane_policy, sign_data_provenance_attestation
+
+**MCP server for gods eye geospatial mcp operations**
+
+Install: `pip install gods-eye-geospatial-mcp`
+
+By MEOK AI Labs — MIT licensed.
