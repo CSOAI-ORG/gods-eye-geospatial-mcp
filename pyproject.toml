@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gods-eye-geospatial-mcp"
-version = "1.2.4"
+version = "1.2.6"
 description = "Gods Eye — civilian open-source geospatial awareness MCP. Wraps open-licence APIs (ESA Copernicus Sentinel-1/2/3/5p, OpenStreetMap, Overture, Ordnance Survey UK, INSPIRE EU, DEFRA) behind the MEOK Care Membrane ethics gate. For AI-agent situational awareness, environmental compliance, disaster response, agriculture. Refuses targeting and personal-surveillance queries. By MEOK AI Labs."
 license = {file = "LICENSE"}
 readme = "README.md"
@@ -20,7 +20,7 @@ Repository = "https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
-only-include = ["server.py"]
+only-include = ["auth_middleware.py", "server.py"]
 
 [project.scripts]
 gods-eye-geospatial-mcp = "server:main"
