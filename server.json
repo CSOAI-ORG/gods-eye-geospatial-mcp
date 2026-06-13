@@ -4,9 +4,8 @@
   "version": "1.2.7",
   "description": "Gods Eye Geospatial MCP Server by MEOK AI Labs",
   "repository": {
-    "type": "git",
     "url": "https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp",
-    "source": "https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp"
+    "source": "github"
   },
   "packages": [
     {
