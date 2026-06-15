@@ -1,4 +1,4 @@
-<!-- mcp-name: CSOAI-ORG/gods-eye-geospatial-mcp -->
+<!-- mcp-name: io.github.CSOAI-ORG/gods-eye-geospatial-mcp -->
 [![MCP Scorecard: 78/100](https://img.shields.io/badge/proofof.ai-78%2F100-5b21b6)](https://proofof.ai/scorecard/gods-eye-geospatial-mcp.html)
 
 # Gods Eye Geospatial MCP
@@ -94,3 +94,28 @@ MIT © [CSOAI-ORG](https://github.com/CSOAI-ORG)
 
 <!-- BUY-LADDER:END -->
 
+
+
+## Configuration
+
+Add to your `claude_desktop_config.json` (Claude Desktop) or your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "gods-eye-geospatial-mcp": {
+      "command": "uvx",
+      "args": ["gods-eye-geospatial-mcp"]
+    }
+  }
+}
+```
+
+Or: `pip install gods-eye-geospatial-mcp` then run the `gods-eye-geospatial-mcp` command (stdio transport).
+
+## Examples
+
+Once configured, ask your assistant, for example:
+- "Use `list_data_sources` to …"
+- "Use `situational_query` to …"
+- "Use `check_data_provenance` to …"
