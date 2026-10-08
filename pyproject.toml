@@ -12,7 +12,7 @@ requires-python = ">=3.10"
 authors = [{name = "MEOK AI Labs", email = "nicholas@meok.ai"}]
 keywords = ["mcp", "geospatial", "copernicus", "sentinel-2", "openstreetmap", "overture-maps", "ordnance-survey", "open-data", "care-membrane", "situational-awareness", "environmental-compliance", "disaster-response", "agriculture", "meok-ai-labs", "gods-eye"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Topic :: Scientific/Engineering :: GIS"]
-dependencies = ["mcp>=1.0.0"]
+dependencies = ["mcp>=2.0.0"]
 
 [project.urls]
 Homepage = "https://meok.ai/gods-eye-geospatial-mcp"
@@ -20,7 +20,7 @@ Repository = "https://github.com/CSOAI-ORG/gods-eye-geospatial-mcp"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
-only-include = ["auth_middleware.py", "server.py"]
+only-include = ["auth_middleware.py", "server.py", "mcp2026_shim.py"]
 
 [project.scripts]
 gods-eye-geospatial-mcp = "server:main"
